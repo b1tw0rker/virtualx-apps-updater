@@ -21,7 +21,9 @@ export async function createBackup(
 ): Promise<string> {
   await mkdir(backupsDir, { recursive: true });
 
-  const fileName = `${folder}-${version}-backup-${todayStamp()}.tar.gz`;
+  // folder may be nested (e.g. "_instances/typo3") - flatten it for the
+  // filename so the backup always lands directly in backupsDir.
+  const fileName = `${folder.replace(/\//g, "-")}-${version}-backup-${todayStamp()}.tar.gz`;
   const archivePath = path.join(backupsDir, fileName);
 
   await tar.create({ gzip: true, file: archivePath, cwd: appsDir }, [folder]);

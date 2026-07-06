@@ -50,4 +50,25 @@ describe("scanApps", () => {
     const typo3 = result.find((app) => app.folder === "typo3");
     expect(typo3?.version).toBeNull();
   });
+
+  it("also finds apps one level inside _instances/", async () => {
+    await mkdir(path.join(appsDir, "_instances", "typo3"), { recursive: true });
+    await writeFile(path.join(appsDir, "_instances", "typo3", ".virtualx.typo3"), "11\n");
+
+    const result = await scanApps(appsDir);
+    const typo3 = result.find((app) => app.folder === "_instances/typo3");
+    expect(typo3).toEqual({
+      folder: "_instances/typo3",
+      markerFile: ".virtualx.typo3",
+      appKey: "typo3",
+      version: "11",
+    });
+  });
+
+  it("does not treat _instances itself as an app when it has no marker", async () => {
+    await mkdir(path.join(appsDir, "_instances"));
+
+    const result = await scanApps(appsDir);
+    expect(result.some((app) => app.folder === "_instances")).toBe(false);
+  });
 });

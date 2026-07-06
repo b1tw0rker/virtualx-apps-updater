@@ -11,7 +11,7 @@
       }
     },
     {
-      "folder": "magento24",
+      "folder": "_archive/magento24",
       "name": "Magento",
       "enabled": false
     },
@@ -26,17 +26,17 @@
       }
     },
     {
-      "folder": "opencart",
+      "folder": "_archive/opencart",
       "name": "OpenCart",
       "enabled": false
     },
     {
-      "folder": "phpBB3",
+      "folder": "_archive/phpBB3",
       "name": "phpBB3",
       "enabled": false
     },
     {
-      "folder": "typo3",
+      "folder": "_instances/typo3",
       "name": "TYPO3",
       "enabled": true,
       "source": {
