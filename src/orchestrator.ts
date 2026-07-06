@@ -41,7 +41,11 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
       continue;
     }
 
-    if (currentVersion && !semver.gt(latestVersion, currentVersion)) {
+    // Marker files aren't guaranteed to be strict semver (e.g. TYPO3's just
+    // says "11") - coerce so comparison doesn't throw on those.
+    const normalizedCurrent = currentVersion ? semver.coerce(currentVersion)?.version : undefined;
+
+    if (normalizedCurrent && !semver.gt(latestVersion, normalizedCurrent)) {
       console.log(`[orchestrator] ${app.name} is up to date (${currentVersion}).`);
       continue;
     }

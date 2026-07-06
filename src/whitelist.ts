@@ -27,6 +27,27 @@ const KNOWN_SOURCES: Record<string, UpdateSource> = {
     // "v1.0-rc") - anchored so pre-release suffixes like "-rc"/"-beta" don't match.
     tagPattern: "^v?(\\d+)\\.(\\d+)\\.(\\d+)$",
   },
+  magento24: {
+    type: "github-tag",
+    repo: "magento/magento2",
+    // Anchored to plain "2.4.9" tags, excluding "-alpha"/"-beta" pre-releases.
+    // Caveat: Magento also ships security fixes as "-pN" patch tags (e.g.
+    // "2.4.8-p5") that this pattern deliberately excludes, since the version
+    // string this checker returns only keeps the X.Y.Z part - a "-pN" match
+    // would be indistinguishable from its unpatched base version. This can
+    // under-report: it won't flag a "-pN"-only security patch as an update.
+    tagPattern: "^(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
+  typo3: {
+    type: "github-tag",
+    repo: "typo3/typo3",
+    // Anchored to plain "v11.5.32" tags. Caveat: this reports the latest tag
+    // across ALL TYPO3 major versions, not just the installed line - e.g. an
+    // "11.x" install will show a "14.x" tag as "available" even though a
+    // TYPO3 major upgrade needs the core upgrade wizard/extension compat
+    // review, not a simple file overlay (no applier is implemented for it).
+    tagPattern: "^v(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
 };
 
 // Only phpMyAdmin (folder "dbx") is enabled by default, per the initial rollout plan.
