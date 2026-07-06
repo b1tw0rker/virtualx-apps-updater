@@ -7,6 +7,20 @@ deploys the result to a target server.
 
 Background and full requirements: [#1](https://github.com/b1tw0rker/virtualx-apps-updater/issues/1).
 
+This repo lives directly inside `/var/virtualx/apps` on the control host
+(dev001) — `package.json` at the repo root, code under `src/`, right next to
+the managed app folders (`dbx/`, `mailx/`, ...). Two things keep that from
+causing cross-contamination:
+
+- `.gitignore` is whitelist-style: only this tool's own files are tracked,
+  the app folders (and any added later) are never picked up by git.
+- `deployToServer()` excludes this tool's own footprint (`node_modules/`,
+  `.git/`, `src/`, `.env`, `.baileys_auth/`, etc.) from the rsync to srv010,
+  so none of it ships to the deploy target.
+
+`lint`/`test` are scoped to `src`/`test` explicitly for the same reason —
+running them unscoped walks the entire multi-hundred-MB app tree.
+
 ## How it works
 
 Each app folder under `APPS_DIR` is expected to carry a `.virtualx.<app>`
