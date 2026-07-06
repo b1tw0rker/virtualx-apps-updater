@@ -1,12 +1,10 @@
-import { createHash } from "node:crypto";
-import { createReadStream, createWriteStream, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { cp, mkdir, mkdtemp, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
 import * as tar from "tar";
 import type { AppEntry } from "../types.js";
+import { assertChecksum, downloadFile, sha256File } from "./downloadUtils.js";
 
 const DIST_BASE = "https://files.phpmyadmin.net/phpMyAdmin";
 
@@ -61,14 +59,6 @@ export async function applyPhpMyAdminUpdate(
   }
 }
 
-async function downloadFile(url: string, destination: string): Promise<void> {
-  const response = await fetch(url);
-  if (!response.ok || !response.body) {
-    throw new Error(`Failed to download ${url}: ${response.status} ${response.statusText}`);
-  }
-  await pipeline(Readable.fromWeb(response.body), createWriteStream(destination));
-}
-
 async function verifyChecksum(archiveUrl: string, archivePath: string): Promise<void> {
   const response = await fetch(`${archiveUrl}.sha256`);
   if (!response.ok) {
@@ -82,13 +72,5 @@ async function verifyChecksum(archiveUrl: string, archivePath: string): Promise<
     throw new Error(`Checksum file for ${archiveUrl} was empty or malformed`);
   }
 
-  const hash = createHash("sha256");
-  await pipeline(createReadStream(archivePath), hash);
-  const actual = hash.digest("hex");
-
-  if (actual !== expected) {
-    throw new Error(
-      `Checksum mismatch for ${archiveUrl}: expected ${expected}, got ${actual}`,
-    );
-  }
+  assertChecksum(archiveUrl, expected, await sha256File(archivePath));
 }

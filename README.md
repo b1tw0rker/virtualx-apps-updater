@@ -42,16 +42,24 @@ existed in `/var/virtualx/apps` before this project). The tool:
 ## Status
 
 - Update *detection* is implemented generically via GitHub tags
-  (`src/checkers/GithubTagChecker.ts`) and wired up for phpMyAdmin.
-- Update *application* is implemented for phpMyAdmin
-  (`src/appliers/phpMyAdmin.ts`): downloads the official
-  `-all-languages` distribution from files.phpmyadmin.net, verifies its
-  published sha256 checksum, and overlays it onto `dbx/` without ever
-  overwriting an existing `config.inc.php` or deleting files that aren't
-  part of the new archive. Every other app still throws
+  (`src/checkers/GithubTagChecker.ts`) and wired up for phpMyAdmin and
+  Roundcube.
+- Update *application* is implemented for:
+  - **phpMyAdmin** (`src/appliers/phpMyAdmin.ts`): downloads the official
+    `-all-languages` distribution from files.phpmyadmin.net, verifies its
+    published sha256 checksum, and overlays it onto `dbx/` without ever
+    overwriting an existing `config.inc.php`.
+  - **Roundcube** (`src/appliers/roundcube.ts`): downloads the official
+    `-complete` distribution from the GitHub release, verifies it against
+    the sha256 digest GitHub publishes for that asset, and overlays it onto
+    `mailx/` without ever overwriting an existing `config/config.inc.php`.
+
+  Both are a merge/overlay, not a mirror - files that aren't part of the new
+  archive are left alone. Every other app still throws
   `NotImplementedError` from `src/appliers/applyUpdate.ts` until an applier
   is registered for it there.
-- Only `dbx` (phpMyAdmin) is enabled in `config/apps.json`. Every other
+- `dbx` (phpMyAdmin) and `mailx` (Roundcube) are enabled in
+  `config/apps.json`. Every other
   discovered app is present but disabled — flip `enabled: true` and add a
   `source`/applier once they exist for that app.
 

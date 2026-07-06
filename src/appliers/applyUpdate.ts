@@ -1,5 +1,6 @@
 import type { AppEntry } from "../types.js";
 import { applyPhpMyAdminUpdate } from "./phpMyAdmin.js";
+import { applyRoundcubeUpdate } from "./roundcube.js";
 
 export class NotImplementedError extends Error {}
 
@@ -10,6 +11,7 @@ type Applier = (app: AppEntry, appsDir: string, newVersion: string) => Promise<v
 // applyUpdate() throws NotImplementedError for them until one is added.
 const APPLIERS: Record<string, Applier> = {
   dbx: applyPhpMyAdminUpdate,
+  mailx: applyRoundcubeUpdate,
 };
 
 /**
