@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "folder": "dbx",
+      "folder": "_instances/dbx",
       "name": "phpMyAdmin",
       "enabled": true,
       "source": {

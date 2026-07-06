@@ -9,7 +9,7 @@ Background and full requirements: [#1](https://github.com/b1tw0rker/virtualx-app
 
 This repo lives directly inside `/var/virtualx/apps` on the control host
 (dev001) — `package.json` at the repo root, code under `src/`, right next to
-the managed app folders (`dbx/`, `mailx/`, ...). Two things keep that from
+the managed app folders (`_instances/dbx/`, `_instances/mailx/`, ...). Two things keep that from
 causing cross-contamination:
 
 - `.gitignore` is whitelist-style: only this tool's own files are tracked,
@@ -47,19 +47,20 @@ existed in `/var/virtualx/apps` before this project). The tool:
 - Update *application* is implemented for:
   - **phpMyAdmin** (`src/appliers/phpMyAdmin.ts`): downloads the official
     `-all-languages` distribution from files.phpmyadmin.net, verifies its
-    published sha256 checksum, and overlays it onto `dbx/` without ever
-    overwriting an existing `config.inc.php`.
+    published sha256 checksum, and overlays it onto `_instances/dbx/` without
+    ever overwriting an existing `config.inc.php`.
   - **Roundcube** (`src/appliers/roundcube.ts`): downloads the official
     `-complete` distribution from the GitHub release, verifies it against
     the sha256 digest GitHub publishes for that asset, and overlays it onto
-    `mailx/` without ever overwriting an existing `config/config.inc.php`.
+    `_instances/mailx/` without ever overwriting an existing
+    `config/config.inc.php`.
 
   Both are a merge/overlay, not a mirror - files that aren't part of the new
   archive are left alone. Every other app still throws
   `NotImplementedError` from `src/appliers/applyUpdate.ts` until an applier
   is registered for it there.
-- `dbx` (phpMyAdmin) and `mailx` (Roundcube) are enabled in
-  `config/apps.json`. Every other
+- `_instances/dbx` (phpMyAdmin) and `_instances/mailx` (Roundcube) are
+  enabled in `config/apps.json`. Every other
   discovered app is present but disabled — flip `enabled: true` and add a
   `source`/applier once they exist for that app.
 
@@ -100,7 +101,7 @@ runs don't require re-pairing.
 {
   "apps": [
     {
-      "folder": "dbx",
+      "folder": "_instances/dbx",
       "name": "phpMyAdmin",
       "enabled": true,
       "source": {
@@ -109,7 +110,7 @@ runs don't require re-pairing.
         "tagPattern": "RELEASE_(\\d+)_(\\d+)_(\\d+)$"
       }
     },
-    { "folder": "mailx", "name": "Roundcube", "enabled": false }
+    { "folder": "_instances/mailx", "name": "Roundcube", "enabled": false }
   ]
 }
 ```

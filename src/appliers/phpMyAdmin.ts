@@ -11,7 +11,7 @@ const DIST_BASE = "https://files.phpmyadmin.net/phpMyAdmin";
 /**
  * Downloads the official "-all-languages" phpMyAdmin distribution (already
  * includes vendor/ and locales, no composer step needed), verifies its
- * published sha256 checksum, and overlays it onto appsDir/dbx.
+ * published sha256 checksum, and overlays it onto appsDir/app.folder.
  *
  * config.inc.php is never overwritten if it already exists, so the site's
  * local database/auth configuration survives the update. Nothing outside
@@ -19,7 +19,7 @@ const DIST_BASE = "https://files.phpmyadmin.net/phpMyAdmin";
  * stray local files are left alone.
  */
 export async function applyPhpMyAdminUpdate(
-  _app: AppEntry,
+  app: AppEntry,
   appsDir: string,
   newVersion: string,
 ): Promise<void> {
@@ -43,7 +43,7 @@ export async function applyPhpMyAdminUpdate(
     }
 
     const sourceDir = path.join(extractDir, topLevelEntry);
-    const targetDir = path.join(appsDir, "dbx");
+    const targetDir = path.join(appsDir, app.folder);
 
     await cp(sourceDir, targetDir, {
       recursive: true,

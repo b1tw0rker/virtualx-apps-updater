@@ -10,11 +10,11 @@ All notable changes to this project are documented here, following the
 - Initial project scaffold: scanner, whitelist config (`config/apps.json`),
   GitHub-tag based update checker, backup step, Baileys WhatsApp notifier,
   rsync deploy step and a CLI (`scan` / `run` / `deploy`).
-- Whitelist bootstrapped with only `dbx` (phpMyAdmin) enabled; all other
-  discovered apps are added disabled by default.
+- Whitelist bootstrapped with only `_instances/dbx` (phpMyAdmin) enabled; all
+  other discovered apps are added disabled by default.
 - phpMyAdmin update applier: downloads the official `-all-languages`
-  distribution, verifies its sha256 checksum, and overlays it onto `dbx/`
-  while preserving the existing `config.inc.php`.
+  distribution, verifies its sha256 checksum, and overlays it onto
+  `_instances/dbx/` while preserving the existing `config.inc.php`.
 
 ### Changed
 
@@ -22,6 +22,12 @@ All notable changes to this project are documented here, following the
   versions continue to live in each app folder's `.virtualx.<app>` marker
   file; the tool's own version now lives in `package.json`, and the running
   history moves here.
+- Moved the Roundcube instance from `mailx/` to `_instances/mailx/` and
+  updated all `mailx` references (`config/apps.json`, applier, tests)
+  accordingly.
+- Moved the phpMyAdmin instance from `dbx/` to `_instances/dbx/` and updated
+  all `dbx` references (`config/apps.json`, applier, whitelist defaults,
+  tests) accordingly.
 
 ---
 

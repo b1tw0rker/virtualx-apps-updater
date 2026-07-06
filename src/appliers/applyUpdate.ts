@@ -10,7 +10,7 @@ type Applier = (app: AppEntry, appsDir: string, newVersion: string) => Promise<v
 // Apps without an entry here still get detection/backup/notification, but
 // applyUpdate() throws NotImplementedError for them until one is added.
 const APPLIERS: Record<string, Applier> = {
-  dbx: applyPhpMyAdminUpdate,
+  "_instances/dbx": applyPhpMyAdminUpdate,
   "_instances/mailx": applyRoundcubeUpdate,
 };
 

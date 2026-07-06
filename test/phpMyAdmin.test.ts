@@ -13,7 +13,7 @@ const VERSION = "9.9.9";
 const ARCHIVE_NAME = `phpMyAdmin-${VERSION}-all-languages.tar.gz`;
 const ARCHIVE_URL = `https://files.phpmyadmin.net/phpMyAdmin/${VERSION}/${ARCHIVE_NAME}`;
 
-const app: AppEntry = { folder: "dbx", name: "phpMyAdmin", enabled: true };
+const app: AppEntry = { folder: "_instances/dbx", name: "phpMyAdmin", enabled: true };
 
 describe("applyPhpMyAdminUpdate", () => {
   let workDir: string;
@@ -27,9 +27,9 @@ describe("applyPhpMyAdminUpdate", () => {
 
     // Existing install with a custom config that must survive the update,
     // plus an unrelated file that a merge/overlay must not delete.
-    await mkdir(path.join(appsDir, "dbx"), { recursive: true });
-    await writeFile(path.join(appsDir, "dbx", "config.inc.php"), "CUSTOM_CONFIG");
-    await writeFile(path.join(appsDir, "dbx", "OLD_FILE.txt"), "keep me");
+    await mkdir(path.join(appsDir, "_instances", "dbx"), { recursive: true });
+    await writeFile(path.join(appsDir, "_instances", "dbx", "config.inc.php"), "CUSTOM_CONFIG");
+    await writeFile(path.join(appsDir, "_instances", "dbx", "OLD_FILE.txt"), "keep me");
 
     // Build a fixture archive matching the real distribution layout.
     const fixtureRoot = path.join(workDir, "fixture");
@@ -69,13 +69,13 @@ describe("applyPhpMyAdminUpdate", () => {
   it("overlays new files without touching an existing config.inc.php or unrelated files", async () => {
     await applyPhpMyAdminUpdate(app, appsDir, VERSION);
 
-    await expect(readFile(path.join(appsDir, "dbx", "config.inc.php"), "utf8")).resolves.toBe(
-      "CUSTOM_CONFIG",
-    );
-    await expect(readFile(path.join(appsDir, "dbx", "NEW_FILE.txt"), "utf8")).resolves.toBe(
-      "brand new",
-    );
-    expect(existsSync(path.join(appsDir, "dbx", "OLD_FILE.txt"))).toBe(true);
+    await expect(
+      readFile(path.join(appsDir, "_instances", "dbx", "config.inc.php"), "utf8"),
+    ).resolves.toBe("CUSTOM_CONFIG");
+    await expect(
+      readFile(path.join(appsDir, "_instances", "dbx", "NEW_FILE.txt"), "utf8"),
+    ).resolves.toBe("brand new");
+    expect(existsSync(path.join(appsDir, "_instances", "dbx", "OLD_FILE.txt"))).toBe(true);
   });
 
   it("throws on checksum mismatch and leaves the target untouched", async () => {
@@ -97,9 +97,9 @@ describe("applyPhpMyAdminUpdate", () => {
     await expect(applyPhpMyAdminUpdate(app, appsDir, VERSION)).rejects.toThrow(
       /Checksum mismatch/,
     );
-    await expect(readFile(path.join(appsDir, "dbx", "config.inc.php"), "utf8")).resolves.toBe(
-      "CUSTOM_CONFIG",
-    );
-    expect(existsSync(path.join(appsDir, "dbx", "NEW_FILE.txt"))).toBe(false);
+    await expect(
+      readFile(path.join(appsDir, "_instances", "dbx", "config.inc.php"), "utf8"),
+    ).resolves.toBe("CUSTOM_CONFIG");
+    expect(existsSync(path.join(appsDir, "_instances", "dbx", "NEW_FILE.txt"))).toBe(false);
   });
 });

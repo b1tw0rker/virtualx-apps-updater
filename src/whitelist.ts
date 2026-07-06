@@ -50,8 +50,8 @@ const KNOWN_SOURCES: Record<string, UpdateSource> = {
   },
 };
 
-// Only phpMyAdmin (folder "dbx") is enabled by default, per the initial rollout plan.
-const INITIAL_ENABLED_FOLDERS = new Set(["dbx"]);
+// Only phpMyAdmin (folder "_instances/dbx") is enabled by default, per the initial rollout plan.
+const INITIAL_ENABLED_FOLDERS = new Set(["_instances/dbx"]);
 
 function friendlyName(appKey: string): string {
   return FRIENDLY_NAMES[appKey] ?? appKey;
