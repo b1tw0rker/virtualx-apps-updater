@@ -29,15 +29,17 @@ existed in `/var/virtualx/apps` before this project). The tool:
 
 - Update *detection* is implemented generically via GitHub tags
   (`src/checkers/GithubTagChecker.ts`) and wired up for phpMyAdmin.
-- Update *application* (actually downloading and installing a new version)
-  is **not implemented yet** for any app — `src/appliers/applyUpdate.ts`
-  intentionally throws `NotImplementedError` until a per-app updater is
-  registered there. Detection, backup, and notification already run end to
-  end; only the file-replacement step is a deliberate follow-up, since it's
-  the riskiest part to get right per CMS.
+- Update *application* is implemented for phpMyAdmin
+  (`src/appliers/phpMyAdmin.ts`): downloads the official
+  `-all-languages` distribution from files.phpmyadmin.net, verifies its
+  published sha256 checksum, and overlays it onto `dbx/` without ever
+  overwriting an existing `config.inc.php` or deleting files that aren't
+  part of the new archive. Every other app still throws
+  `NotImplementedError` from `src/appliers/applyUpdate.ts` until an applier
+  is registered for it there.
 - Only `dbx` (phpMyAdmin) is enabled in `config/apps.json`. Every other
   discovered app is present but disabled — flip `enabled: true` and add a
-  `source` once its checker/applier exists.
+  `source`/applier once they exist for that app.
 
 ## Setup
 

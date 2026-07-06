@@ -12,6 +12,9 @@ All notable changes to this project are documented here, following the
   rsync deploy step and a CLI (`scan` / `run` / `deploy`).
 - Whitelist bootstrapped with only `dbx` (phpMyAdmin) enabled; all other
   discovered apps are added disabled by default.
+- phpMyAdmin update applier: downloads the official `-all-languages`
+  distribution, verifies its sha256 checksum, and overlays it onto `dbx/`
+  while preserving the existing `config.inc.php`.
 
 ### Changed
 

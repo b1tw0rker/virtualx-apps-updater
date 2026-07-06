@@ -1,14 +1,16 @@
 import type { AppEntry } from "../types.js";
+import { applyPhpMyAdminUpdate } from "./phpMyAdmin.js";
 
 export class NotImplementedError extends Error {}
 
 type Applier = (app: AppEntry, appsDir: string, newVersion: string) => Promise<void>;
 
-// No app-specific updater is implemented yet. This is the extension point for
-// downloading and installing a new version per app type (e.g. phpMyAdmin:
-// download the release tarball, extract it over dbx/ while preserving
-// config.inc.php, then rewrite .virtualx.phpmyadmin).
-const APPLIERS: Record<string, Applier> = {};
+// Extension point for downloading and installing a new version per app type.
+// Apps without an entry here still get detection/backup/notification, but
+// applyUpdate() throws NotImplementedError for them until one is added.
+const APPLIERS: Record<string, Applier> = {
+  dbx: applyPhpMyAdminUpdate,
+};
 
 /**
  * Applies an update for the given app. Throws NotImplementedError until a
