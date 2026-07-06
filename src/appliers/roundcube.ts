@@ -17,7 +17,7 @@ interface GithubReleaseAsset {
  * Downloads the official "-complete" Roundcube distribution (already
  * includes vendor/ dependencies, no composer step needed), verifies it
  * against the sha256 digest GitHub publishes for the release asset, and
- * overlays it onto appsDir/mailx.
+ * overlays it onto appsDir/app.folder.
  *
  * config/config.inc.php (the site's real config, as opposed to the shipped
  * config.inc.php.sample) is never overwritten if it already exists. Nothing
@@ -25,7 +25,7 @@ interface GithubReleaseAsset {
  * mirror, so stray local files are left alone.
  */
 export async function applyRoundcubeUpdate(
-  _app: AppEntry,
+  app: AppEntry,
   appsDir: string,
   newVersion: string,
 ): Promise<void> {
@@ -49,7 +49,7 @@ export async function applyRoundcubeUpdate(
     }
 
     const sourceDir = path.join(extractDir, topLevelEntry);
-    const targetDir = path.join(appsDir, "mailx");
+    const targetDir = path.join(appsDir, app.folder);
 
     await cp(sourceDir, targetDir, {
       recursive: true,

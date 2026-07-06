@@ -16,7 +16,7 @@
       "enabled": false
     },
     {
-      "folder": "mailx",
+      "folder": "_instances/mailx",
       "name": "Roundcube",
       "enabled": true,
       "source": {

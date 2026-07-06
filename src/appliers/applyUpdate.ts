@@ -11,7 +11,7 @@ type Applier = (app: AppEntry, appsDir: string, newVersion: string) => Promise<v
 // applyUpdate() throws NotImplementedError for them until one is added.
 const APPLIERS: Record<string, Applier> = {
   dbx: applyPhpMyAdminUpdate,
-  mailx: applyRoundcubeUpdate,
+  "_instances/mailx": applyRoundcubeUpdate,
 };
 
 /**

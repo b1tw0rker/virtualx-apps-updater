@@ -13,7 +13,7 @@ const ARCHIVE_NAME = `roundcubemail-${VERSION}-complete.tar.gz`;
 const ARCHIVE_URL = `https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/${ARCHIVE_NAME}`;
 const RELEASE_API_URL = `https://api.github.com/repos/roundcube/roundcubemail/releases/tags/${VERSION}`;
 
-const app: AppEntry = { folder: "mailx", name: "Roundcube", enabled: true };
+const app: AppEntry = { folder: "_instances/mailx", name: "Roundcube", enabled: true };
 
 describe("applyRoundcubeUpdate", () => {
   let workDir: string;
@@ -27,12 +27,12 @@ describe("applyRoundcubeUpdate", () => {
 
     // Existing install with a real config that must survive the update,
     // plus an unrelated file that a merge/overlay must not delete.
-    await mkdir(path.join(appsDir, "mailx", "config"), { recursive: true });
+    await mkdir(path.join(appsDir, "_instances", "mailx", "config"), { recursive: true });
     await writeFile(
-      path.join(appsDir, "mailx", "config", "config.inc.php"),
+      path.join(appsDir, "_instances", "mailx", "config", "config.inc.php"),
       "CUSTOM_CONFIG",
     );
-    await writeFile(path.join(appsDir, "mailx", "OLD_FILE.txt"), "keep me");
+    await writeFile(path.join(appsDir, "_instances", "mailx", "OLD_FILE.txt"), "keep me");
 
     const fixtureRoot = path.join(workDir, "fixture");
     const topLevel = `roundcubemail-${VERSION}`;
@@ -81,14 +81,14 @@ describe("applyRoundcubeUpdate", () => {
     await applyRoundcubeUpdate(app, appsDir, VERSION);
 
     await expect(
-      readFile(path.join(appsDir, "mailx", "config", "config.inc.php"), "utf8"),
+      readFile(path.join(appsDir, "_instances", "mailx", "config", "config.inc.php"), "utf8"),
     ).resolves.toBe("CUSTOM_CONFIG");
-    await expect(readFile(path.join(appsDir, "mailx", "NEW_FILE.txt"), "utf8")).resolves.toBe(
+    await expect(readFile(path.join(appsDir, "_instances", "mailx", "NEW_FILE.txt"), "utf8")).resolves.toBe(
       "brand new",
     );
-    expect(existsSync(path.join(appsDir, "mailx", "OLD_FILE.txt"))).toBe(true);
+    expect(existsSync(path.join(appsDir, "_instances", "mailx", "OLD_FILE.txt"))).toBe(true);
     expect(
-      existsSync(path.join(appsDir, "mailx", "config", "config.inc.php.sample")),
+      existsSync(path.join(appsDir, "_instances", "mailx", "config", "config.inc.php.sample")),
     ).toBe(true);
   });
 
@@ -139,6 +139,6 @@ describe("applyRoundcubeUpdate", () => {
     await expect(applyRoundcubeUpdate(app, appsDir, VERSION)).rejects.toThrow(
       /Checksum mismatch/,
     );
-    expect(existsSync(path.join(appsDir, "mailx", "NEW_FILE.txt"))).toBe(false);
+    expect(existsSync(path.join(appsDir, "_instances", "mailx", "NEW_FILE.txt"))).toBe(false);
   });
 });
