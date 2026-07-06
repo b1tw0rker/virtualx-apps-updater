@@ -96,10 +96,16 @@ Apps without a `source` are skipped during `run` even if `enabled: true`.
 
 ## Deploy
 
-Deploying uses `rsync` over SSH (`root@srv010` by default). The
-host running this tool needs `rsync` installed and key-based SSH access to
-the target — set `DEPLOY_SSH_KEY` in `.env` if not using the default
-identity/agent.
+Deploying uses `rsync` over SSH (`root@192.168.0.10` by default, i.e. srv010
+over the internal LAN). srv010's public hostname only offers GSSAPI auth for
+root, not key-based SSH, so this only works from a control host on the same
+internal network (dev001) - set `DEPLOY_HOST`/`DEPLOY_SSH_KEY` in `.env` if
+running this from elsewhere. Verified end to end: a real `npm run deploy`
+from dev001 synced all of `/var/virtualx/apps` (~725 MB) to srv010.
+
+`deployToServer()` runs `rsync --delete`, so anything on the target that
+doesn't exist locally gets removed - this mirrors dev001 onto srv010, it's
+not a merge.
 
 ## Development
 

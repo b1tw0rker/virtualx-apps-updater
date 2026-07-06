@@ -22,7 +22,10 @@ export const config = {
   },
 
   deploy: {
-    host: process.env.DEPLOY_HOST ?? "root@srv010",
+    // srv010's public IP only offers GSSAPI auth for root; from
+    // dev001 (the control host this runs on) it's reachable over the
+    // internal LAN, where key-based SSH works.
+    host: process.env.DEPLOY_HOST ?? "root@192.168.0.10",
     remotePath: process.env.DEPLOY_REMOTE_PATH ?? "/var/virtualx/apps",
     sshKeyPath: process.env.DEPLOY_SSH_KEY ?? undefined,
   },
