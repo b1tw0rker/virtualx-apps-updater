@@ -1,6 +1,19 @@
-node_modules/
-dist/
-.env
-.baileys_auth/
-*.log
-pairing-qr.png
+# This repo's root is APPS_DIR (/var/virtualx/apps) - the managed app
+# folders (dbx, mailx, magento24, ...) live right next to this tool's own
+# files, and must never end up in this git repo. Whitelist-style: ignore
+# everything by default, only allow in the tool's own files.
+/*
+
+!/.github/
+!/src/
+!/test/
+!/config/
+!/.gitignore
+!/.env.example
+!/package.json
+!/package-lock.json
+!/tsconfig.json
+!/eslint.config.js
+!/README.md
+!/CHANGELOG.md
+!/LICENSE

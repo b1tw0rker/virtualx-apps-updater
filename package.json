@@ -15,8 +15,8 @@
     "run": "tsx src/index.ts run",
     "deploy": "tsx src/index.ts deploy",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "test": "vitest run"
+    "lint": "eslint src test",
+    "test": "vitest run --dir test"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",

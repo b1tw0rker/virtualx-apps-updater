@@ -7,6 +7,32 @@ export interface DeployOptions {
   sshKeyPath?: string;
 }
 
+// This tool's own files live directly inside APPS_DIR (see README) - none of
+// them are part of the sites being managed, and some (.env, .baileys_auth)
+// are secrets, so they must never be shipped to the deploy target.
+const SELF_EXCLUDES = [
+  "node_modules/",
+  "dist/",
+  "src/",
+  "test/",
+  "config/",
+  ".git/",
+  ".github/",
+  ".baileys_auth/",
+  ".env",
+  ".env.example",
+  ".gitignore",
+  "package.json",
+  "package-lock.json",
+  "tsconfig.json",
+  "eslint.config.js",
+  "README.md",
+  "CHANGELOG.md",
+  "LICENSE",
+  "pairing-qr.png",
+  "*.log",
+];
+
 /**
  * Mirrors localPath to host:remotePath via rsync over SSH. Requires `rsync`
  * and key-based SSH access to `host` to be available on the machine running
@@ -20,6 +46,7 @@ export function deployToServer(options: DeployOptions): Promise<void> {
   const args = [
     "-avz",
     "--delete",
+    ...SELF_EXCLUDES.flatMap((pattern) => ["--exclude", pattern]),
     "-e",
     sshCommand,
     `${options.localPath.replace(/\/?$/, "/")}`,
