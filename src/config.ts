@@ -1,0 +1,31 @@
+import "dotenv/config";
+import path from "node:path";
+
+function required(name: string, fallback?: string): string {
+  const value = process.env[name] ?? fallback;
+  if (value === undefined) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
+export const config = {
+  appsDir: required("APPS_DIR", "/var/virtualx/apps"),
+  get backupsDir() {
+    return path.join(this.appsDir, "_backups");
+  },
+  whitelistPath: required("WHITELIST_PATH", "config/apps.json"),
+
+  whatsapp: {
+    targetNumber: process.env.WHATSAPP_TARGET_NUMBER ?? "",
+    authDir: required("WHATSAPP_AUTH_DIR", ".baileys_auth"),
+  },
+
+  deploy: {
+    host: process.env.DEPLOY_HOST ?? "root@srv010",
+    remotePath: process.env.DEPLOY_REMOTE_PATH ?? "/var/virtualx/apps",
+    sshKeyPath: process.env.DEPLOY_SSH_KEY ?? undefined,
+  },
+};
+
+export type AppConfig = typeof config;

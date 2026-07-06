@@ -1,0 +1,42 @@
+{
+  "name": "virtualx-apps-updater",
+  "version": "0.1.0",
+  "description": "Scans /var/virtualx/apps, updates whitelisted apps, notifies via WhatsApp (Baileys) and deploys to the target server.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "scan": "tsx src/index.ts scan",
+    "run": "tsx src/index.ts run",
+    "deploy": "tsx src/index.ts deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.9",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "pino": "^9.4.0",
+    "qrcode-terminal": "^0.12.0",
+    "semver": "^7.6.3",
+    "tar": "^7.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/semver": "^7.5.8",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "eslint": "^9.14.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

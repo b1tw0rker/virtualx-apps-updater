@@ -1,0 +1,39 @@
+{
+  "apps": [
+    {
+      "folder": "dbx",
+      "name": "phpMyAdmin",
+      "enabled": true,
+      "source": {
+        "type": "github-tag",
+        "repo": "phpmyadmin/phpmyadmin",
+        "tagPattern": "RELEASE_(\\d+)_(\\d+)_(\\d+)$"
+      }
+    },
+    {
+      "folder": "magento24",
+      "name": "Magento",
+      "enabled": false
+    },
+    {
+      "folder": "mailx",
+      "name": "Roundcube",
+      "enabled": false
+    },
+    {
+      "folder": "opencart",
+      "name": "OpenCart",
+      "enabled": false
+    },
+    {
+      "folder": "phpBB3",
+      "name": "phpBB3",
+      "enabled": false
+    },
+    {
+      "folder": "typo3",
+      "name": "TYPO3",
+      "enabled": false
+    }
+  ]
+}
