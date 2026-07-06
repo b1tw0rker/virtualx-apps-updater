@@ -16,6 +16,13 @@ export interface AppEntry {
   enabled: boolean;
   /** Optional update source config; apps without one are skipped even if enabled. */
   source?: UpdateSource;
+  /**
+   * If true, also scans `<HTTPD_DIR>/<domain>/htdocs/dbx` for local phpMyAdmin
+   * copies and patches them - but only when the latest available version is a
+   * same-major.minor patch bump over the installed one (see
+   * src/localSecurityPatch.ts). Minor/major jumps are reported, not applied.
+   */
+  localSecurityPatches?: boolean;
 }
 
 export interface WhitelistConfig {

@@ -4,6 +4,7 @@ import { createBackup } from "./backup.js";
 import { createChecker } from "./checkers/createChecker.js";
 import { config } from "./config.js";
 import { deployToServer } from "./deploy.js";
+import { applyLocalSecurityPatches } from "./localSecurityPatch.js";
 import { WhatsAppNotifier } from "./notify/WhatsAppNotifier.js";
 import type { Notifier } from "./notify/Notifier.js";
 import { scanApps } from "./scanner.js";
@@ -79,6 +80,33 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
     await notifier.send(
       `✅ ${app.name} wurde von ${currentVersion ?? "unbekannt"} auf ${latestVersion} aktualisiert (${app.folder}).`,
     );
+  }
+
+  // Locally hosted customer copies of an app (currently only dbx/phpMyAdmin)
+  // live under HTTPD_DIR, not APPS_DIR, so they're handled separately from
+  // the loop above and never trigger the APPS_DIR deploy step below.
+  for (const app of whitelist) {
+    if (!app.localSecurityPatches || !app.source) continue;
+
+    const latestVersion = await createChecker(app.source).getLatestVersion();
+    if (!latestVersion) {
+      console.warn(`[orchestrator] Could not determine latest version for ${app.name} (local security patches).`);
+      continue;
+    }
+
+    const localResults = await applyLocalSecurityPatches({
+      httpdDir: config.httpdDir,
+      backupsDir: config.backupsDir,
+      latestVersion,
+      dryRun: options.dryRun,
+    });
+
+    for (const result of localResults) {
+      notifier ??= new WhatsAppNotifier(config.whatsapp.authDir, config.whatsapp.targetNumber);
+      await notifier.send(
+        `🔒 Lokales Sicherheitsupdate: ${result.app.name} in ${result.app.folder} wurde von ${result.previousVersion ?? "unbekannt"} auf ${result.newVersion} aktualisiert.`,
+      );
+    }
   }
 
   if (results.length > 0 && !options.dryRun) {

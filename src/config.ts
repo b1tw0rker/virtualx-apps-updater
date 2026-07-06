@@ -15,6 +15,9 @@ export const config = {
     return path.join(this.appsDir, "_backups");
   },
   whitelistPath: required("WHITELIST_PATH", "config/apps.json"),
+  // Root of locally hosted customer sites, scanned for per-domain dbx
+  // (phpMyAdmin) copies when an app's `localSecurityPatches` flag is set.
+  httpdDir: required("HTTPD_DIR", "/home/httpd"),
 
   whatsapp: {
     targetNumber: process.env.WHATSAPP_TARGET_NUMBER ?? "",

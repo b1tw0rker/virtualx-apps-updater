@@ -8,7 +8,8 @@
         "type": "github-tag",
         "repo": "phpmyadmin/phpmyadmin",
         "tagPattern": "RELEASE_(\\d+)_(\\d+)_(\\d+)$"
-      }
+      },
+      "localSecurityPatches": true
     },
     {
       "folder": "_archive/magento24",

@@ -15,6 +15,13 @@ All notable changes to this project are documented here, following the
 - phpMyAdmin update applier: downloads the official `-all-languages`
   distribution, verifies its sha256 checksum, and overlays it onto
   `_instances/dbx/` while preserving the existing `config.inc.php`.
+- Local security patches (`src/localSecurityPatch.ts`): an app entry with
+  `"localSecurityPatches": true` (enabled for `dbx`/phpMyAdmin as a first
+  case) additionally scans `HTTPD_DIR/<domain>/htdocs/dbx` for locally
+  hosted customer copies of that app and patches any that are behind by a
+  same-major.minor version only - minor/major jumps are reported, not
+  applied. Backs up and restores original file ownership the same way the
+  main `APPS_DIR` appliers do, independently of the `APPS_DIR` deploy step.
 
 ### Changed
 

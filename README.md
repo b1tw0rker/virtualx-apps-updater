@@ -1,5 +1,9 @@
 # virtualx-apps-updater
 
+[![version](https://img.shields.io/badge/version-v0.1.0-green.svg)](package.json)
+[![Letztes Update](https://img.shields.io/github/last-commit/b1tw0rker/virtualx-apps-updater.svg)](https://github.com/b1tw0rker/virtualx-apps-updater/commits/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Scans `/var/virtualx/apps`, checks whitelisted apps for updates, backs them
 up, applies updates, sends a WhatsApp notification (via
 [Baileys](https://github.com/WhiskeySockets/Baileys)) for every update, and
@@ -63,6 +67,19 @@ existed in `/var/virtualx/apps` before this project). The tool:
   enabled in `config/apps.json`. Every other
   discovered app is present but disabled — flip `enabled: true` and add a
   `source`/applier once they exist for that app.
+- **Local security patches** (`src/localSecurityPatch.ts`): separate from the
+  `APPS_DIR` update cycle above, an app entry with `"localSecurityPatches":
+  true` (currently only `dbx`/phpMyAdmin) additionally scans
+  `HTTPD_DIR/<domain>/htdocs/dbx` for locally hosted customer copies of that
+  app. Each one is only patched if the latest available version is a
+  same-major.minor patch bump over its installed version (per its
+  `.virtualx.<app>` marker) — a minor/major jump is reported but never
+  applied automatically, since that's out of scope for a security-only
+  mechanism. A patched site is backed up the same way as `APPS_DIR` apps, and
+  has its original file ownership (uid/gid) restored afterwards, since these
+  sites are overlaid as root but normally owned by their hosting user. This
+  never touches the `APPS_DIR` deploy step, since it operates on a completely
+  separate directory tree (`HTTPD_DIR`, default `/home/httpd`).
 
 ## Setup
 
@@ -108,7 +125,8 @@ runs don't require re-pairing.
         "type": "github-tag",
         "repo": "phpmyadmin/phpmyadmin",
         "tagPattern": "RELEASE_(\\d+)_(\\d+)_(\\d+)$"
-      }
+      },
+      "localSecurityPatches": true
     },
     { "folder": "_instances/mailx", "name": "Roundcube", "enabled": false }
   ]
