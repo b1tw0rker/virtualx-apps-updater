@@ -3,3 +3,4 @@ dist/
 .env
 .baileys_auth/
 *.log
+pairing-qr.png

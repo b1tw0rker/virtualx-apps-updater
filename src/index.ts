@@ -1,7 +1,11 @@
 #!/usr/bin/env node
+import path from "node:path";
 import { Command } from "commander";
+import QRCode from "qrcode";
+import qrcodeTerminal from "qrcode-terminal";
 import { config } from "./config.js";
 import { deployToServer } from "./deploy.js";
+import { WhatsAppNotifier } from "./notify/WhatsAppNotifier.js";
 import { runUpdateCycle } from "./orchestrator.js";
 import { scanApps } from "./scanner.js";
 import { loadOrInitWhitelist } from "./whitelist.js";
@@ -35,6 +39,11 @@ program
   .action(async (opts: { dryRun: boolean }) => {
     const results = await runUpdateCycle({ dryRun: opts.dryRun });
     console.log(`[cli] Done. ${results.length} app(s) updated.`);
+    // Baileys keeps an internal keep-alive timer running even after the
+    // socket is closed, which would otherwise leave this process hanging
+    // forever once at least one WhatsApp message was sent - fatal for a
+    // cron-triggered run.
+    process.exit(0);
   });
 
 program
@@ -48,6 +57,38 @@ program
       sshKeyPath: config.deploy.sshKeyPath,
     });
     console.log(`[cli] Deployed ${config.appsDir} to ${config.deploy.host}:${config.deploy.remotePath}`);
+  });
+
+program
+  .command("pair")
+  .description(
+    "Pair the WhatsApp session (writes a scannable QR to pairing-qr.png) and send a test message once connected",
+  )
+  .action(async () => {
+    const qrPngPath = path.resolve("pairing-qr.png");
+    const notifier = new WhatsAppNotifier(config.whatsapp.authDir, config.whatsapp.targetNumber, {
+      onQr: (qr) => {
+        console.log("[cli] --- QR START ---");
+        qrcodeTerminal.generate(qr, { small: true });
+        console.log("[cli] --- QR END ---");
+        QRCode.toFile(qrPngPath, qr, { width: 512 }, (err) => {
+          if (err) {
+            console.error("[cli] Failed to write QR code image:", err);
+            return;
+          }
+          console.log(
+            `[cli] QR code also written to ${qrPngPath} - scan within ~20s, it refreshes automatically if it expires.`,
+          );
+        });
+      },
+    });
+
+    await notifier.send("✅ virtualx-apps-updater: WhatsApp-Pairing erfolgreich getestet.");
+    console.log("[cli] Test message sent - pairing complete.");
+    await notifier.close();
+    // See the comment on the "run" command - Baileys' keep-alive timer
+    // otherwise keeps this process alive indefinitely.
+    process.exit(0);
   });
 
 program.parseAsync(process.argv).catch((error) => {
