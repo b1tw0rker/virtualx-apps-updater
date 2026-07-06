@@ -1,7 +1,8 @@
 # This repo's root is APPS_DIR (/var/virtualx/apps) - the managed app
-# folders (dbx, mailx, magento24, ...) live right next to this tool's own
-# files, and must never end up in this git repo. Whitelist-style: ignore
-# everything by default, only allow in the tool's own files.
+# folders (_instances/dbx, _instances/mailx, _archive/magento24, ...) live
+# right next to this tool's own files, and must never end up in this git
+# repo. Whitelist-style: ignore everything by default, only allow in the
+# tool's own files.
 /*
 
 !/.github/
@@ -16,4 +17,5 @@
 !/eslint.config.js
 !/README.md
 !/CHANGELOG.md
+!/CLAUDE.md
 !/LICENSE
