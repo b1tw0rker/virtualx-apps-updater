@@ -18,7 +18,12 @@
     {
       "folder": "mailx",
       "name": "Roundcube",
-      "enabled": false
+      "enabled": true,
+      "source": {
+        "type": "github-tag",
+        "repo": "roundcube/roundcubemail",
+        "tagPattern": "^v?(\\d+)\\.(\\d+)\\.(\\d+)$"
+      }
     },
     {
       "folder": "opencart",

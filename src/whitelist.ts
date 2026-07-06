@@ -20,6 +20,13 @@ const KNOWN_SOURCES: Record<string, UpdateSource> = {
     repo: "phpmyadmin/phpmyadmin",
     tagPattern: "RELEASE_(\\d+)_(\\d+)_(\\d+)$",
   },
+  roundcube: {
+    type: "github-tag",
+    repo: "roundcube/roundcubemail",
+    // Roundcube tags are plain "1.7.2" (older ones used a "v" prefix, e.g.
+    // "v1.0-rc") - anchored so pre-release suffixes like "-rc"/"-beta" don't match.
+    tagPattern: "^v?(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
 };
 
 // Only phpMyAdmin (folder "dbx") is enabled by default, per the initial rollout plan.
