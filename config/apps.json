@@ -13,12 +13,7 @@
     {
       "folder": "magento24",
       "name": "Magento",
-      "enabled": true,
-      "source": {
-        "type": "github-tag",
-        "repo": "magento/magento2",
-        "tagPattern": "^(\\d+)\\.(\\d+)\\.(\\d+)$"
-      }
+      "enabled": false
     },
     {
       "folder": "mailx",
