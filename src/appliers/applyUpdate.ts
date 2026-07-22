@@ -1,4 +1,8 @@
 import type { AppEntry } from "../types.js";
+import { applyFlarumUpdate } from "./flarum.js";
+import { applyMatomoUpdate } from "./matomo.js";
+import { applyMauticUpdate } from "./mautic.js";
+import { applyNextcloudUpdate } from "./nextcloud.js";
 import { applyPhpMyAdminUpdate } from "./phpMyAdmin.js";
 import { applyRoundcubeUpdate } from "./roundcube.js";
 
@@ -11,7 +15,11 @@ type Applier = (app: AppEntry, appsDir: string, newVersion: string) => Promise<v
 // applyUpdate() throws NotImplementedError for them until one is added.
 const APPLIERS: Record<string, Applier> = {
   "_instances/dbx": applyPhpMyAdminUpdate,
-  "_instances/mailx": applyRoundcubeUpdate,
+  "_instances/webmailx": applyRoundcubeUpdate,
+  "_instances/nextcloud": applyNextcloudUpdate,
+  "_instances/matomo": applyMatomoUpdate,
+  "_instances/mautic": applyMauticUpdate,
+  "_instances/flarum": applyFlarumUpdate,
 };
 
 /**

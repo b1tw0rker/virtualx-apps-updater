@@ -9,6 +9,10 @@ const FRIENDLY_NAMES: Record<string, string> = {
   opencart: "OpenCart",
   phpbb3: "phpBB3",
   typo3: "TYPO3",
+  nextcloud: "Nextcloud",
+  matomo: "Matomo",
+  mautic: "Mautic",
+  flarum: "Flarum",
 };
 
 // Known update sources for apps we already know how to check via GitHub tags.
@@ -46,6 +50,41 @@ const KNOWN_SOURCES: Record<string, UpdateSource> = {
     // "11.x" install will show a "14.x" tag as "available" even though a
     // TYPO3 major upgrade needs the core upgrade wizard/extension compat
     // review, not a simple file overlay (no applier is implemented for it).
+    tagPattern: "^v(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
+  nextcloud: {
+    type: "github-tag",
+    repo: "nextcloud/server",
+    // Anchored to plain "v34.0.1" tags. Same major-version caveat as TYPO3
+    // above: this reports the latest tag across ALL Nextcloud major
+    // versions, not just the installed line - a major upgrade needs the
+    // occ upgrade wizard/app compat review, not a simple file overlay.
+    tagPattern: "^v(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
+  matomo: {
+    type: "github-tag",
+    repo: "matomo-org/matomo",
+    // Anchored to plain "5.11.2" tags, excluding the "-alpha.<timestamp>"/
+    // "-bN" pre-release tags Matomo's nightly/beta build pipeline also pushes.
+    tagPattern: "^(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
+  mautic: {
+    type: "github-tag",
+    repo: "mautic/mautic",
+    // Anchored to plain "7.1.2" tags, excluding the "-rc" release-candidate
+    // tags Mautic also pushes (e.g. "7.2.0-rc").
+    tagPattern: "^(\\d+)\\.(\\d+)\\.(\\d+)$",
+  },
+  flarum: {
+    type: "github-tag",
+    repo: "flarum/flarum",
+    // Anchored to plain "v1.8.1" tags on the flarum/flarum skeleton repo,
+    // excluding the "-beta.N"/"-rc.N" pre-release tags Flarum also pushes
+    // (e.g. "v2.0.0-rc.5"). Same major-version caveat as TYPO3/Nextcloud:
+    // this reports the latest tag across ALL major versions, but the Flarum
+    // applier only advances within the site's own composer.json constraint
+    // (composer update), so a new major won't be pulled without a constraint
+    // bump and extension-compat review.
     tagPattern: "^v(\\d+)\\.(\\d+)\\.(\\d+)$",
   },
 };

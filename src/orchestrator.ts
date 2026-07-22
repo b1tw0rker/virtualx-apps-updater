@@ -22,7 +22,7 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
   const versionByFolder = new Map(scanned.map((s) => [s.folder, s.version]));
 
   const results: UpdateResult[] = [];
-  let notifier: Notifier | undefined;
+  const messages: string[] = [];
 
   for (const app of whitelist) {
     if (!app.enabled) continue;
@@ -76,8 +76,7 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
     await writeVersionMarker(config.appsDir, app.folder, latestVersion);
     results.push({ app, previousVersion: currentVersion, newVersion: latestVersion });
 
-    notifier ??= new WhatsAppNotifier(config.whatsapp.authDir, config.whatsapp.targetNumber);
-    await notifier.send(
+    messages.push(
       `✅ ${app.name} wurde von ${currentVersion ?? "unbekannt"} auf ${latestVersion} aktualisiert (${app.folder}).`,
     );
   }
@@ -102,8 +101,7 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
     });
 
     for (const result of localResults) {
-      notifier ??= new WhatsAppNotifier(config.whatsapp.authDir, config.whatsapp.targetNumber);
-      await notifier.send(
+      messages.push(
         `🔒 Lokales Sicherheitsupdate: ${result.app.name} in ${result.app.folder} wurde von ${result.previousVersion ?? "unbekannt"} auf ${result.newVersion} aktualisiert.`,
       );
     }
@@ -117,12 +115,19 @@ export async function runUpdateCycle(options: RunOptions): Promise<UpdateResult[
       sshKeyPath: config.deploy.sshKeyPath,
     });
 
-    notifier ??= new WhatsAppNotifier(config.whatsapp.authDir, config.whatsapp.targetNumber);
-    await notifier.send(
+    messages.push(
       `🚀 Deploy nach ${config.deploy.host} abgeschlossen (${results.length} App(s) aktualisiert).`,
     );
   }
 
-  await notifier?.close();
+  if (messages.length > 0) {
+    const notifier: Notifier = new WhatsAppNotifier(
+      config.whatsapp.authDir,
+      config.whatsapp.targetNumber,
+    );
+    await notifier.send(messages.join("\n\n"));
+    await notifier.close();
+  }
+
   return results;
 }

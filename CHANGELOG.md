@@ -15,6 +15,13 @@ All notable changes to this project are documented here, following the
 - phpMyAdmin update applier: downloads the official `-all-languages`
   distribution, verifies its sha256 checksum, and overlays it onto
   `_instances/dbx/` while preserving the existing `config.inc.php`.
+- Flarum forum support: checker/whitelist entry (`flarum/flarum` GitHub tags,
+  `v1.8.1`-style, pre-releases excluded) plus a Composer-based applier
+  (`src/appliers/flarum.ts`). Flarum ships no self-contained archive, so —
+  unlike the download/overlay appliers — it upgrades in place via `composer
+  update` + `php flarum migrate` + `php flarum cache:clear`, preserving
+  `config.php`/`storage/`/installed extensions. Added `enabled: false` in
+  `config/apps.json` until an instance exists under `_instances/flarum`.
 - Local security patches (`src/localSecurityPatch.ts`): an app entry with
   `"localSecurityPatches": true` (enabled for `dbx`/phpMyAdmin as a first
   case) additionally scans `HTTPD_DIR/<domain>/htdocs/dbx` for locally

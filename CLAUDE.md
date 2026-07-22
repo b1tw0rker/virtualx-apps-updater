@@ -130,6 +130,20 @@ release archive, verify its checksum, and `cp` with a `filter` that skips
 overwriting the site's local config file(s) if they already exist — this is
 a merge/overlay, never a mirror/delete.
 
+Not every app fits the download/overlay mold. `src/appliers/flarum.ts` is the
+exception: Flarum publishes no self-contained archive (its GitHub releases
+carry only the source zipball, no `vendor/`) and is upgraded exclusively via
+Composer. Its applier therefore shells out to `composer update` + `php flarum
+migrate` + `php flarum cache:clear` **in place** in `appsDir/app.folder` — no
+download, no overlay, no config-guard filter (in-place upgrade preserves
+`config.php`, `storage/`, and installed extensions inherently). It needs
+`composer`/`php` on the control host, and only advances within the site's own
+`composer.json` constraint, so a new *major* release is intentionally not
+pulled automatically (same major-version caveat as the TYPO3/Nextcloud
+checkers). Flarum's checker/whitelist entry are wired up but the app ships
+`enabled: false` in `config/apps.json` until an instance actually exists under
+`_instances/flarum` (it is not installed yet).
+
 ## Versioning
 
 This project's own version lives in `package.json`. Running history is in

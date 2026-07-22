@@ -17,7 +17,7 @@
       "enabled": false
     },
     {
-      "folder": "_instances/mailx",
+      "folder": "_instances/webmailx",
       "name": "Roundcube",
       "enabled": true,
       "source": {
@@ -43,6 +43,46 @@
       "source": {
         "type": "github-tag",
         "repo": "typo3/typo3",
+        "tagPattern": "^v(\\d+)\\.(\\d+)\\.(\\d+)$"
+      }
+    },
+    {
+      "folder": "_instances/nextcloud",
+      "name": "Nextcloud",
+      "enabled": true,
+      "source": {
+        "type": "github-tag",
+        "repo": "nextcloud/server",
+        "tagPattern": "^v(\\d+)\\.(\\d+)\\.(\\d+)$"
+      }
+    },
+    {
+      "folder": "_instances/matomo",
+      "name": "Matomo",
+      "enabled": true,
+      "source": {
+        "type": "github-tag",
+        "repo": "matomo-org/matomo",
+        "tagPattern": "^(\\d+)\\.(\\d+)\\.(\\d+)$"
+      }
+    },
+    {
+      "folder": "_instances/mautic",
+      "name": "Mautic",
+      "enabled": true,
+      "source": {
+        "type": "github-tag",
+        "repo": "mautic/mautic",
+        "tagPattern": "^(\\d+)\\.(\\d+)\\.(\\d+)$"
+      }
+    },
+    {
+      "folder": "_instances/flarum",
+      "name": "Flarum",
+      "enabled": false,
+      "source": {
+        "type": "github-tag",
+        "repo": "flarum/flarum",
         "tagPattern": "^v(\\d+)\\.(\\d+)\\.(\\d+)$"
       }
     }
